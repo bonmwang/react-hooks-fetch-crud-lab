@@ -1,13 +1,15 @@
-import React from "react";
+// QuestionItem.js
+import React, { useState } from 'react';
 
-function QuestionItem({ question }) {
+function QuestionItem({ question, onDelete, onUpdateCorrectIndex }) {
   const { id, prompt, answers, correctIndex } = question;
+  const [selectedCorrectIndex, setSelectedCorrectIndex] = useState(correctIndex);
 
-  const options = answers.map((answer, index) => (
-    <option key={index} value={index}>
-      {answer}
-    </option>
-  ));
+  const handleCorrectIndexChange = (e) => {
+    const newCorrectIndex = parseInt(e.target.value);
+    setSelectedCorrectIndex(newCorrectIndex);
+    onUpdateCorrectIndex(id, newCorrectIndex);
+  };
 
   return (
     <li>
@@ -15,9 +17,18 @@ function QuestionItem({ question }) {
       <h5>Prompt: {prompt}</h5>
       <label>
         Correct Answer:
-        <select defaultValue={correctIndex}>{options}</select>
+        <select
+          value={selectedCorrectIndex}
+          onChange={handleCorrectIndexChange}
+        >
+          {answers.map((answer, index) => (
+            <option key={index} value={index}>
+              {answer}
+            </option>
+          ))}
+        </select>
       </label>
-      <button>Delete Question</button>
+      <button onClick={() => onDelete(id)}>Delete Question</button>
     </li>
   );
 }
